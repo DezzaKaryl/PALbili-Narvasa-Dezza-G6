@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PALbili - {% block title %}{% endblock %}</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    nav { background: #f0f0f0; padding: 10px; margin-bottom: 20px; }
+    nav a { margin-right: 12px; }
+    .success { color: green; background: #e6ffe6; padding: 8px; }
+    .error { color: red; background: #ffe6e6; padding: 8px; }
+    .errorlist { color: red; }
+  </style>
+</head>
+<body>
+  <nav>
+    <strong>PALbili</strong> |
+    {% if user.is_authenticated %}
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      {% if user.role == 'customer' %}<a href="#">My Orders</a>{% endif %}
+      {% if user.role == 'rider' %}<a href="#">Delivery Requests</a>{% endif %}
+      {% if user.role == 'admin' %}<a href="#">Manage Users</a>{% endif %}
+      <a href="{% url 'profile' %}">Profile</a>
+      <form method="post" action="{% url 'logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+  </nav>
+
+  {% for message in messages %}
+    <p class="{{ message.tags }}">{{ message }}</p>
+  {% endfor %}
+
+  {% block content %}{% endblock %}
+</body>
+</html>
